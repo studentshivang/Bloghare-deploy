@@ -20,11 +20,26 @@ app.use('/api',require('./routes/blogRouter'));
 //For image
 app.use('/api',require('./routes/upload'));
 
-const PORT = 5000;
+const port = process.env.PORT || 5000;
+    if (process.env.NODE_ENV === "production") {
+      app.use(express.static("Client/build"));
+      app.get("*", (req, res) => {
+        res.sendFile(
+          path.resolve(__dirname + "/Client/build/index.html"),
+          function (err) {
+            if (err) {
+              console.log(err);
+            }
+          }
+        );
+      });
+    }
+
+// const PORT = 5000;
 try {
     databaseconnection().then(()=>{
-        app.listen(PORT,()=>{
-            console.log('Server  is running on port',PORT);
+        app.listen(port,()=>{
+            console.log('Server  is running on port',port);
         })
     })
 } catch (error) {
